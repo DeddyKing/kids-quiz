@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>语文古诗词问答游戏</title>
+    <link rel="stylesheet" href="quiz-game.css">
+</head>
+<body>
+    <div class="container">
+        <!-- 开始页面 -->
+        <div id="start-screen" class="screen">
+            <h1 class="game-title">📚 语文古诗词问答</h1>
+            <div class="player-setup">
+                <h2>设置玩家</h2>
+                <div id="player-inputs">
+                    <input type="text" class="player-name" placeholder="玩家1名字" maxlength="8">
+                    <input type="text" class="player-name" placeholder="玩家2名字" maxlength="8">
+                    <input type="text" class="player-name" placeholder="玩家3名字" maxlength="8">
+                    <input type="text" class="player-name" placeholder="玩家4名字" maxlength="8">
+                </div>
+                <button id="add-player-btn" class="btn secondary">+ 添加玩家</button>
+            </div>
+            <div class="difficulty-select">
+                <h2>选择难度</h2>
+                <div class="difficulty-options">
+                    <label class="difficulty-label">
+                        <input type="radio" name="difficulty" value="easy" checked>
+                        <span class="difficulty-card easy">简单</span>
+                    </label>
+                    <label class="difficulty-label">
+                        <input type="radio" name="difficulty" value="medium">
+                        <span class="difficulty-card medium">中等</span>
+                    </label>
+                    <label class="difficulty-label">
+                        <input type="radio" name="difficulty" value="hard">
+                        <span class="difficulty-card hard">困难</span>
+                    </label>
+                </div>
+            </div>
+            <button id="start-btn" class="btn primary">开始游戏 🎮</button>
+        </div>
+
+        <!-- 游戏页面 -->
+        <div id="game-screen" class="screen hidden">
+            <div class="game-header">
+                <div class="current-player">
+                    <span class="player-indicator">👤</span>
+                    <span id="current-player-name">玩家1</span>
+                </div>
+                <div class="round-info">
+                    第 <span id="current-round">1</span> / <span id="total-rounds">5</span> 轮
+                </div>
+            </div>
+
+            <div class="score-board">
+                <div id="score-list"></div>
+            </div>
+
+            <div class="question-card">
+                <div class="question-category" id="question-category">古诗词</div>
+                <div class="question-text" id="question-text"></div>
+            </div>
+
+            <div class="options-container" id="options-container">
+                <!-- 选项将由 JS 生成 -->
+            </div>
+
+            <div class="game-footer">
+                <button id="next-btn" class="btn primary hidden">下一题 →</button>
+            </div>
+        </div>
+
+        <!-- 结果页面 -->
+        <div id="result-screen" class="screen hidden">
+            <h1 class="result-title">🏆 游戏结束！</h1>
+            <div class="winner-announcement">
+                <span class="trophy">🥇</span>
+                <h2 id="winner-name"></h2>
+                <p id="winner-score" class="winner-score"></p>
+            </div>
+            <div class="final-rankings" id="final-rankings">
+                <!-- 排名将由 JS 生成 -->
+            </div>
+            <button id="restart-btn" class="btn primary">再玩一次 🔄</button>
+        </div>
+    </div>
+
+    <script src="quiz-game.js"></script>
+</body>
+</html>

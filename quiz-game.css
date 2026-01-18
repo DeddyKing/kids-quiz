@@ -1,0 +1,359 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB',
+        'Microsoft YaHei', sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    padding: 10px;
+    color: #333;
+}
+
+.container {
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.screen {
+    background: white;
+    border-radius: 20px;
+    padding: 24px 20px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    min-height: calc(100vh - 20px);
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* 标题样式 */
+.game-title {
+    text-align: center;
+    font-size: 28px;
+    color: #667eea;
+    margin-bottom: 30px;
+}
+
+.result-title {
+    text-align: center;
+    font-size: 28px;
+    color: #f59e0b;
+    margin-bottom: 20px;
+}
+
+/* 输入框样式 */
+.player-setup h2, .difficulty-select h2 {
+    font-size: 18px;
+    margin-bottom: 15px;
+    color: #555;
+}
+
+#player-inputs {
+    margin-bottom: 15px;
+}
+
+.player-name {
+    width: 100%;
+    padding: 14px 16px;
+    margin-bottom: 12px;
+    border: 2px solid #e0e0e0;
+    border-radius: 12px;
+    font-size: 16px;
+    transition: border-color 0.3s;
+}
+
+.player-name:focus {
+    outline: none;
+    border-color: #667eea;
+}
+
+.player-name:last-child {
+    margin-bottom: 0;
+}
+
+/* 按钮样式 */
+.btn {
+    width: 100%;
+    padding: 16px;
+    border: none;
+    border-radius: 12px;
+    font-size: 18px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    margin-top: 15px;
+}
+
+.btn:active {
+    transform: scale(0.98);
+}
+
+.btn.primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+}
+
+.btn.secondary {
+    background: #f0f0f0;
+    color: #555;
+    font-size: 16px;
+    padding: 12px;
+}
+
+/* 难度选择 */
+.difficulty-options {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.difficulty-label {
+    flex: 1;
+}
+
+.difficulty-label input {
+    display: none;
+}
+
+.difficulty-card {
+    display: block;
+    padding: 14px 10px;
+    text-align: center;
+    background: #f8f8f8;
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-weight: 500;
+}
+
+.difficulty-card.easy { color: #10b981; }
+.difficulty-card.medium { color: #f59e0b; }
+.difficulty-card.hard { color: #ef4444; }
+
+.difficulty-label input:checked + .difficulty-card {
+    border-color: currentColor;
+    background: white;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* 游戏页面 */
+.game-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 15px;
+    margin-bottom: 15px;
+    border-bottom: 2px solid #f0f0f0;
+}
+
+.current-player {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 18px;
+    font-weight: 600;
+    color: #667eea;
+}
+
+.round-info {
+    font-size: 14px;
+    color: #888;
+}
+
+/* 计分板 */
+.score-board {
+    margin-bottom: 20px;
+}
+
+.score-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 14px;
+    margin-bottom: 6px;
+    background: #f8f9ff;
+    border-radius: 8px;
+    transition: all 0.3s;
+}
+
+.score-item.active {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.score-name {
+    font-weight: 500;
+}
+
+.score-value {
+    font-size: 18px;
+    font-weight: 700;
+}
+
+/* 问题卡片 */
+.question-card {
+    background: linear-gradient(135deg, #fef9c3 0%, #fef08a 100%);
+    padding: 20px 16px;
+    border-radius: 16px;
+    margin-bottom: 20px;
+    min-height: 150px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.question-category {
+    font-size: 12px;
+    color: #854d0e;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.question-text {
+    font-size: 20px;
+    font-weight: 600;
+    color: #1c1917;
+    line-height: 1.5;
+}
+
+/* 选项 */
+.options-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.option-btn {
+    padding: 16px 20px;
+    border: 2px solid #e0e0e0;
+    border-radius: 12px;
+    background: white;
+    font-size: 16px;
+    text-align: left;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.option-btn:hover {
+    border-color: #667eea;
+    background: #f8f9ff;
+}
+
+.option-btn.correct {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+    border-color: transparent;
+}
+
+.option-btn.wrong {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    color: white;
+    border-color: transparent;
+}
+
+.option-btn:disabled {
+    cursor: not-allowed;
+}
+
+.game-footer {
+    margin-top: 20px;
+}
+
+/* 结果页面 */
+.winner-announcement {
+    text-align: center;
+    padding: 30px 20px;
+    background: linear-gradient(135deg, #fef3c7 0%, #fcd34d 100%);
+    border-radius: 16px;
+    margin-bottom: 25px;
+}
+
+.trophy {
+    font-size: 60px;
+    display: block;
+    margin-bottom: 15px;
+}
+
+.winner-announcement h2 {
+    font-size: 24px;
+    color: #92400e;
+    margin-bottom: 8px;
+}
+
+.winner-score {
+    font-size: 20px;
+    color: #78350f;
+    font-weight: 600;
+}
+
+.final-rankings {
+    margin-bottom: 25px;
+}
+
+.ranking-item {
+    display: flex;
+    align-items: center;
+    padding: 14px 16px;
+    margin-bottom: 10px;
+    background: #f8f9ff;
+    border-radius: 12px;
+    border-left: 4px solid #667eea;
+}
+
+.ranking-item:nth-child(1) {
+    border-left-color: #ffd700;
+    background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+}
+
+.ranking-item:nth-child(2) {
+    border-left-color: #c0c0c0;
+}
+
+.ranking-item:nth-child(3) {
+    border-left-color: #cd7f32;
+}
+
+.ranking-rank {
+    font-size: 24px;
+    font-weight: 700;
+    margin-right: 15px;
+    min-width: 30px;
+}
+
+.ranking-name {
+    flex: 1;
+    font-weight: 500;
+}
+
+.ranking-score {
+    font-size: 20px;
+    font-weight: 700;
+    color: #667eea;
+}
+
+/* 动画 */
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+}
+
+.option-btn.wrong {
+    animation: shake 0.5s ease-in-out;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+.score-item.active {
+    animation: pulse 0.5s ease-in-out;
+}
