@@ -3,5 +3,11 @@ Thumbs.db
 node_modules/
 .claude/
 *.bat
-*.py
 knowledge-base/
+# 保留分析脚本
+!auction_analysis.py
+!close_market_selector.py
+# 排除其他临时py文件
+*.pyc
+__pycache__/
+/nul/
