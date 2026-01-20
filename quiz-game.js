@@ -364,7 +364,7 @@ const questionBank = {
         {category: "成语", question: "闻鸡起舞讲的是谁？", options: ["祖逖", "刘琨", "祖冲之", "刘禹锡"], answer: 0},
         {category: "成语", question: "闻鸡起舞的起舞是什么意思？", options: ["练武", "跳舞", "起床", "唱歌"], answer: 0},
         {category: "成语", question: "东施效颦讲的是什么故事？", options: ["模仿", "学习", "嫉妒", "友谊"], answer: 0},
-        {category: "成语", question: "东施效颦中的东施是谁？", options: "丑女", "美女", "西施的朋友", "东施的邻居"], answer: 0},
+        {category: "成语", question: "东施效颦中的东施是谁？", options: ["丑女", "美女", "西施的朋友", "东施的邻居"], answer: 0},
         {category: "成语", question: "邯郸学步讲的是什么故事？", options: ["盲目模仿", "学习走路", "旅行", "拜访"], answer: 0},
         {category: "成语", question: "邯郸学步的结果是什么？", options: ["不会走路", "学会走路", "走路很好", "忘记自己"], answer: 0},
         {category: "成语", question: "盲人摸象讲的是什么道理？", options: ["片面看问题", "大象很大", "盲人可怜", "大象危险"], answer: 0},
