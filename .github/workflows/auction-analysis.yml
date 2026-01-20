@@ -1,0 +1,86 @@
+name: 早盘竞价分析
+
+on:
+  # 每个交易日9:25分自动运行（北京时间）
+  # 注意：GitHub Actions使用UTC时间，北京时间9:25 = UTC 1:25
+  schedule:
+    - cron: '25 1 * * 1-5'  # 周一到周五 01:25 UTC = 北京时间 09:25
+
+  # 手动触发，方便测试
+  workflow_dispatch:
+
+  # 允许手动触发时指定时间（用于模拟不同时间点运行）
+  workflow_call:
+
+jobs:
+  analyze:
+    name: 执行竞价分析
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+
+      - name: 设置 Python 环境
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: 安装依赖
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests
+
+      - name: 创建报告目录
+        run: mkdir -p reports
+
+      - name: 运行竞价分析
+        run: python auction_analysis.py
+        continue-on-error: true
+
+      - name: 获取当前日期
+        id: date
+        run: |
+          echo "date=$(date +'%Y%m%d')" >> $GITHUB_OUTPUT
+          echo "datetime=$(date +'%Y-%m-%d %H:%M:%S')" >> $GITHUB_OUTPUT
+
+      - name: 检查报告是否生成
+        id: check_report
+        run: |
+          if [ -f reports/auction_report_*.md ]; then
+            echo "report_exists=true" >> $GITHUB_OUTPUT
+            echo "找到报告文件"
+            ls -lh reports/
+          else
+            echo "report_exists=false" >> $GITHUB_OUTPUT
+            echo "未找到报告文件"
+          fi
+
+      - name: 提交报告到仓库
+        if: steps.check_report.outputs.report_exists == 'true'
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add reports/
+          git commit -m "竞价分析报告 - ${{ steps.date.outputs.datetime }}" || echo "没有新文件需要提交"
+          git push || echo "推送失败或没有变化"
+
+      - name: 生成分析摘要
+        if: steps.check_report.outputs.report_exists == 'true'
+        run: |
+          echo "## 早盘竞价分析完成" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**运行时间**: ${{ steps.date.outputs.datetime }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "分析报告已生成并保存到 `reports/` 目录" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 报告文件" >> $GITHUB_STEP_SUMMARY
+          ls -lh reports/ >> $GITHUB_STEP_SUMMARY
+
+      - name: 上传报告文件
+        if: steps.check_report.outputs.report_exists == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: auction-report-${{ steps.date.outputs.date }}
+          path: reports/
+          retention-days: 30

@@ -1,0 +1,83 @@
+name: 尾盘选股分析
+
+on:
+  # 每个交易日14:30分自动运行（北京时间）
+  # 北京时间14:30 = UTC 06:30
+  schedule:
+    - cron: '30 6 * * 1-5'  # 周一到周五 06:30 UTC = 北京时间 14:30
+
+  # 手动触发，方便测试
+  workflow_dispatch:
+
+jobs:
+  select:
+    name: 执行尾盘选股
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+
+      - name: 设置 Python 环境
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: 安装依赖
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests
+
+      - name: 创建报告目录
+        run: mkdir -p reports
+
+      - name: 运行尾盘选股
+        run: python close_market_selector.py
+        continue-on-error: true
+
+      - name: 获取当前日期
+        id: date
+        run: |
+          echo "date=$(date +'%Y%m%d')" >> $GITHUB_OUTPUT
+          echo "datetime=$(date +'%Y-%m-%d %H:%M:%S')" >> $GITHUB_OUTPUT
+
+      - name: 检查报告是否生成
+        id: check_report
+        run: |
+          if [ -f reports/close_market_selection_*.md ]; then
+            echo "report_exists=true" >> $GITHUB_OUTPUT
+            echo "找到选股报告文件"
+            ls -lh reports/
+          else
+            echo "report_exists=false" >> $GITHUB_OUTPUT
+            echo "未找到选股报告文件"
+          fi
+
+      - name: 提交报告到仓库
+        if: steps.check_report.outputs.report_exists == 'true'
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add reports/
+          git commit -m "尾盘选股报告 - ${{ steps.date.outputs.datetime }}" || echo "没有新文件需要提交"
+          git push || echo "推送失败或没有变化"
+
+      - name: 生成分析摘要
+        if: steps.check_report.outputs.report_exists == 'true'
+        run: |
+          echo "## 尾盘选股分析完成" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**运行时间**: ${{ steps.date.outputs.datetime }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "选股分析报告已生成并保存到 `reports/` 目录" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 报告文件" >> $GITHUB_STEP_SUMMARY
+          ls -lh reports/ >> $GITHUB_STEP_SUMMARY
+
+      - name: 上传报告文件
+        if: steps.check_report.outputs.report_exists == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: close-market-selection-${{ steps.date.outputs.date }}
+          path: reports/
+          retention-days: 30
