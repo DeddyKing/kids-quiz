@@ -696,7 +696,7 @@ let gameState = {
     currentQuestionIndex: 0,
     currentPlayerIndex: 0,
     currentRound: 1,
-    totalRounds: 5,
+    totalRounds: 10,
     difficulty: 'easy',
     questions: [],
     answerRevealed: false
@@ -710,10 +710,15 @@ const screens = {
 };
 
 const startBtn = document.getElementById('start-btn');
-const addPlayerBtn = document.getElementById('add-player-btn');
 const nextBtn = document.getElementById('next-btn');
 const restartBtn = document.getElementById('restart-btn');
-const playerInputs = document.getElementById('player-inputs');
+const playerSelect = document.getElementById('player-select');
+const selectedPlayersDiv = document.getElementById('selected-players');
+
+// 预设玩家列表
+const presetPlayers = ['Michael', 'Freda', '小兔子', '月季花', 'Deddy', 'Mom'];
+// 已选择的玩家
+let selectedPlayerNames = [];
 
 // 洗牌函数
 function shuffle(array) {
@@ -735,34 +740,66 @@ function getDifficultyName(difficulty) {
     return names[difficulty] || difficulty;
 }
 
-// 添加玩家输入框
-addPlayerBtn.addEventListener('click', () => {
-    if (document.querySelectorAll('.player-name').length < 6) {
-        const input = document.createElement('input');
-        input.type = 'text';
-        input.className = 'player-name';
-        input.placeholder = `玩家${document.querySelectorAll('.player-name').length + 1}名字`;
-        input.maxLength = 8;
-        playerInputs.appendChild(input);
-    }
+// 玩家选择功能
+playerSelect.querySelectorAll('.player-option').forEach(btn => {
+    btn.addEventListener('click', () => {
+        const playerName = btn.dataset.name;
+
+        if (selectedPlayerNames.includes(playerName)) {
+            // 取消选择
+            selectedPlayerNames = selectedPlayerNames.filter(n => n !== playerName);
+            btn.classList.remove('selected');
+        } else if (selectedPlayerNames.length < 6) {
+            // 添加选择
+            selectedPlayerNames.push(playerName);
+            btn.classList.add('selected');
+        }
+
+        updateSelectedPlayersDisplay();
+    });
 });
+
+// 更新已选择的玩家显示
+function updateSelectedPlayersDisplay() {
+    selectedPlayersDiv.innerHTML = '';
+    if (selectedPlayerNames.length === 0) {
+        selectedPlayersDiv.innerHTML = '<p style="color: #888;">请选择玩家...</p>';
+    } else {
+        selectedPlayerNames.forEach((name, index) => {
+            const tag = document.createElement('span');
+            tag.className = 'player-tag';
+            tag.textContent = name;
+            tag.innerHTML = `${name} <span class="remove-btn" data-name="${name}">×</span>`;
+            selectedPlayersDiv.appendChild(tag);
+        });
+
+        // 添加移除按钮事件
+        selectedPlayersDiv.querySelectorAll('.remove-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const nameToRemove = btn.dataset.name;
+                selectedPlayerNames = selectedPlayerNames.filter(n => n !== nameToRemove);
+                // 更新选择状态
+                playerSelect.querySelectorAll('.player-option').forEach(optionBtn => {
+                    if (optionBtn.dataset.name === nameToRemove) {
+                        optionBtn.classList.remove('selected');
+                    }
+                });
+                updateSelectedPlayersDisplay();
+            });
+        });
+    }
+}
 
 // 开始游戏
 startBtn.addEventListener('click', () => {
-    const nameInputs = document.querySelectorAll('.player-name');
-    const players = [];
-
-    for (const input of nameInputs) {
-        const name = input.value.trim();
-        if (name) {
-            players.push({ name, score: 0 });
-        }
-    }
-
-    if (players.length < 1) {
-        alert('请至少输入一个玩家的名字！');
+    if (selectedPlayerNames.length < 1) {
+        alert('请至少选择一个玩家！');
         return;
     }
+
+    // 从已选择的玩家创建玩家对象
+    const players = selectedPlayerNames.map(name => ({ name, score: 0 }));
 
     // 获取难度
     const difficulty = document.querySelector('input[name="difficulty"]:checked').value;
@@ -773,7 +810,7 @@ startBtn.addEventListener('click', () => {
         currentQuestionIndex: 0,
         currentPlayerIndex: 0,
         currentRound: 1,
-        totalRounds: Math.max(3, players.length),
+        totalRounds: 10,
         difficulty,
         questions: shuffle(questionBank[difficulty]),
         answerRevealed: false
@@ -914,16 +951,11 @@ function showResults() {
 // 重新开始
 restartBtn.addEventListener('click', () => {
     showScreen('start');
-    // 重置玩家输入
-    const inputs = document.querySelectorAll('.player-name');
-    inputs.forEach((input, index) => {
-        input.value = index < 2 ? '' : '';
-        if (index >= 2) input.style.display = 'none';
+    // 重置玩家选择
+    selectedPlayerNames = [];
+    updateSelectedPlayersDisplay();
+    // 重置玩家选择按钮状态
+    playerSelect.querySelectorAll('.player-option').forEach(btn => {
+        btn.classList.remove('selected');
     });
-    // 恢复默认2个玩家输入框
-    if (inputs.length > 2) {
-        for (let i = inputs.length - 1; i >= 2; i--) {
-            inputs[i].remove();
-        }
-    }
 });

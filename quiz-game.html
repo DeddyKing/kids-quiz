@@ -12,14 +12,16 @@
         <div id="start-screen" class="screen">
             <h1 class="game-title">📚 语文古诗词问答</h1>
             <div class="player-setup">
-                <h2>设置玩家</h2>
-                <div id="player-inputs">
-                    <input type="text" class="player-name" placeholder="玩家1名字" maxlength="8">
-                    <input type="text" class="player-name" placeholder="玩家2名字" maxlength="8">
-                    <input type="text" class="player-name" placeholder="玩家3名字" maxlength="8">
-                    <input type="text" class="player-name" placeholder="玩家4名字" maxlength="8">
+                <h2>选择玩家</h2>
+                <div id="player-select">
+                    <button class="player-option" data-name="Michael">👤 Michael</button>
+                    <button class="player-option" data-name="Freda">🧔 Freda</button>
+                    <button class="player-option" data-name="小兔子">🐰 小兔子</button>
+                    <button class="player-option" data-name="月季花">🌸 月季花</button>
+                    <button class="player-option" data-name="Deddy">👦 Deddy</button>
+                    <button class="player-option" data-name="Mom">👩 Mom</button>
                 </div>
-                <button id="add-player-btn" class="btn secondary">+ 添加玩家</button>
+                <div id="selected-players"></div>
             </div>
             <div class="difficulty-select">
                 <h2>选择难度</h2>
